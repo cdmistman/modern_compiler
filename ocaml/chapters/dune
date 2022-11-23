@@ -1,0 +1,10 @@
+(library
+ (name modern_compiler)
+ (public_name modern_compiler)
+
+ (modules chap01)
+
+ (libraries base stdio)
+
+ (preprocess (pps ppx_expect ppx_inline_test))
+ (inline_tests))
