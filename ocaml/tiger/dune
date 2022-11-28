@@ -1,0 +1,10 @@
+(library
+  (name tiger)
+  (public_name tiger)
+
+  (modules)
+  
+  (libraries base stdio)
+  
+  (preprocess (pps ppx_expect ppx_inline_test))
+  (inline_tests))

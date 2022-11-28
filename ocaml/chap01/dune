@@ -1,6 +1,6 @@
 (library
- (name modern_compiler)
- (public_name modern_compiler)
+ (name chap01)
+ (public_name chap01)
 
  (modules chap01)
 
