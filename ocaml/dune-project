@@ -1,6 +1,6 @@
 (lang dune 3.6)
 
-(name modern_compiler)
+(name tiger)
 
 (generate_opam_files false)
 
@@ -16,11 +16,12 @@
 (documentation https://url/to/documentation)
 
 (package
- (name modern_compiler)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml dune)
- (tags
-  (topics "to describe" your project)))
+ (name chap01)
+ (depends ocaml dune))
+
+(package
+  (name tiger)
+  (synopsis "WIP compiler (following the textbook) for Tiger")
+  (depends ocaml dune))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
