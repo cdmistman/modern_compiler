@@ -2,26 +2,11 @@
 
 (name tiger)
 
-(generate_opam_files false)
-
 (source
  (github cdmistman/modern_compiler))
-
-(authors "Author Name")
-
-(maintainers "Maintainer Name")
-
-(license LICENSE)
-
-(documentation https://url/to/documentation)
 
 (package
  (name chap01)
  (depends ocaml dune))
-
-(package
-  (name tiger)
-  (synopsis "WIP compiler (following the textbook) for Tiger")
-  (depends ocaml dune))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
