@@ -68,7 +68,7 @@ rule read =
 	| digit+ { Lexing.lexeme lexbuf |> int_of_string |> TOKENS.int |> finish lexbuf }
 	| '"' { read_string (Lexing.lexeme_start lexbuf) (Buffer.create 8) lexbuf }
 	| eof { TOKENS.eof }
-	| _ as ch { "uh oh: " ^ (string_of_int (Char.code ch)) |> ERRORMSG.impossible }
+	| _ as ch { "uh oh: " ^ (string_of_int (Char.code ch)) |> ErrorMsg.impossible }
 
 and read_comment level =
 	parse
@@ -76,7 +76,7 @@ and read_comment level =
 	| "*/" { if level = 0 then read lexbuf else read_comment (level - 1) lexbuf }
 	| _ { read_comment level lexbuf }
 	| eof {
-		ERRORMSG.error lexbuf.lex_curr_pos "unclosed comment";
+		ErrorMsg.error lexbuf.lex_curr_pos "unclosed comment";
 		TOKENS.eof
 	}
 
@@ -98,10 +98,10 @@ and read_string start_p buf =
 		let errormsg = "invalid ASCII character code " ^ chr in
 		let chr' = int_of_string chr in
 		if chr' > 255 then
-			ERRORMSG.error (lexbuf.lex_curr_pos - 3) errormsg
+			ErrorMsg.error (lexbuf.lex_curr_pos - 3) errormsg
 		else begin
 			(try Char.chr chr' with
-				Invalid_argument _ -> ERRORMSG.impossible errormsg)
+				Invalid_argument _ -> ErrorMsg.impossible errormsg)
 			|> Buffer.add_char buf
 		end;
 		read_string start_p buf lexbuf
@@ -115,8 +115,8 @@ and read_string start_p buf =
 	}
 	| eof {
 		let end_p = lexbuf.lex_curr_pos in
-		ERRORMSG.error end_p "unclosed string";
+		ErrorMsg.error end_p "unclosed string";
 		TOKENS.string (Buffer.contents buf) (start_p, end_p)
 	}
-	| _ as c { "unhandled string char `" ^ String.make 1 c ^ "`" |> ERRORMSG.impossible }
+	| _ as c { "unhandled string char `" ^ String.make 1 c ^ "`" |> ErrorMsg.impossible }
 
