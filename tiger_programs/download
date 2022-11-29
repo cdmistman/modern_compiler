@@ -1,0 +1,14 @@
+#!/bin/sh
+
+files=(
+	merge.tig
+	queens.tig
+)
+for ((i = 1; i < 50; i++)); do
+	files+=("test${i}.tig")
+done
+
+for file in "${files[@]}"; do
+	curl -o "$file" "https://www.cs.princeton.edu/~appel/modern/testcases/${file}"
+done
+
