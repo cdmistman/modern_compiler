@@ -10,7 +10,7 @@
  (depends ocaml dune))
 
 (package
-  (name lexical_analysis)
+  (name tiger)
   (depends ocaml dune))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project

@@ -1,0 +1,12 @@
+(ocamllex lex)
+
+(library
+  (name tiger)
+  (public_name tiger)
+  
+  (modules driver errormsg tokens lex)
+  
+  (libraries base stdio)
+  
+  (preprocess (pps ppx_expect ppx_inline_test))
+  (inline_tests))
