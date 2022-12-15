@@ -1,0 +1,5 @@
+(test
+  (name sample_programs)
+  (preprocess (pps ppx_blob))
+  (preprocessor_deps (glob_files ../../sample_programs/*.tig))
+  )
