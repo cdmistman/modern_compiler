@@ -36,14 +36,14 @@ let interp (prog : stm) : unit =
         let value, env' = interpExp expr env in
         update env' (name, value)
     | PrintStm exprs ->
-        let line, env' =
-          List.fold_left
-            (fun (line, env) expr ->
+        let strings, env' =
+          List.fold_right
+            (fun expr (strings, env) ->
               let value, env' = interpExp expr env in
-              (line ^ string_of_int value, env'))
-            ("", env) exprs
+              (string_of_int value :: strings, env'))
+            exprs ([], env)
         in
-        print_endline line;
+        print_endline @@ String.concat " " strings;
         env'
   and interpExp (expr : exp) (env : table) : int * table =
     match expr with
