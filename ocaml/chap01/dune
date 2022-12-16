@@ -1,10 +1,8 @@
 (library
  (name chap01)
  (public_name chap01)
-
  (modules chap01)
-
  (libraries base stdio)
-
- (preprocess (pps ppx_expect ppx_inline_test))
+ (preprocess
+  (pps ppx_expect ppx_inline_test))
  (inline_tests))
