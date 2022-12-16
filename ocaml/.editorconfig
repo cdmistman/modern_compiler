@@ -1,2 +1,6 @@
 [{*.ml}]
 indent_style = space
+
+[dune{,-project,-workspace}]
+indent_style = space
+indent_size = 1

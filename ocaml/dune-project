@@ -1,16 +1,22 @@
 (lang dune 3.6)
 
+(using directory-targets 0.1)
+
 (name tiger)
 
 (source
  (github cdmistman/modern_compiler))
 
 (package
+ (name gen-sample-programs-file)
+ (depends ocaml dune))
+
+(package
  (name chap01)
  (depends ocaml dune))
 
 (package
-  (name tiger)
-  (depends ocaml dune))
+ (name tiger)
+ (depends ocaml dune))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project

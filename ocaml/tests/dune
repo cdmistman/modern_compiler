@@ -1,5 +1,24 @@
 (test
-  (name sample_programs)
-  (preprocess (pps ppx_blob))
-  (preprocessor_deps (glob_files ../../sample_programs/*.tig))
-  )
+ (name test_sample_programs)
+ (modules programs test_sample_programs))
+
+(executable
+ (name gen_sample_programs_file)
+ (package gen-sample-programs-file)
+ (public_name gen-sample-programs-file)
+ (modules gen_sample_programs_file)
+ (libraries
+  cohttp-eio
+  domain-name
+  eio_main
+  eio.unix
+  mirage-crypto-rng
+  mirage-crypto-rng-eio
+  tls-eio
+  unix))
+
+(rule
+ (action
+  (with-stdout-to
+   programs.ml
+   (run gen-sample-programs-file))))
