@@ -1,6 +1,7 @@
 (lang dune 3.6)
 
 (using directory-targets 0.1)
+
 (using menhir 2.1)
 
 (name tiger)
@@ -10,14 +11,28 @@
 
 (package
  (name gen-sample-programs-file)
- (depends ocaml dune))
+ (depends
+  cohttp-eio
+  domain-name
+  dune
+  eio_main
+  eio.unix
+  mirage-crypto-rng
+  mirage-crypto-rng-eio
+  ocaml
+  tls-eio
+  unix))
 
 (package
  (name chap01)
- (depends ocaml dune))
+ (depends dune ocaml))
 
 (package
  (name tiger)
- (depends ocaml dune))
+ (depends
+  dune
+  ocaml
+  (ppx_expect :with-test)
+  (ppx_inline_test :with-test)))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
