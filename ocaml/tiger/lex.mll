@@ -1,10 +1,7 @@
 {
 open Errormsg
 open Lexing
-open Tokens
-
-let finish lexbuf tok =
-	tok (Lexing.lexeme_start lexbuf, Lexing.lexeme_end lexbuf);;
+open Parse
 }
 
 let digit = ['0'-'9']
@@ -21,53 +18,53 @@ rule read =
 	| whitespace { read lexbuf }
 	| newline { Lexing.new_line lexbuf; read lexbuf }
 	(* braces/brackets/parentheses *)
-	| "{" { finish lexbuf TOKENS.lbrace }
-	| "}" { finish lexbuf TOKENS.rbrace }
-	| "[" { finish lexbuf TOKENS.lbrack }
-	| "]" { finish lexbuf TOKENS.rbrack }
-	| "(" { finish lexbuf TOKENS.lparen }
-	| ")" { finish lexbuf TOKENS.rparen }
+	| "{" { LCURLY }
+	| "}" { RCURLY }
+	| "(" { LPAREN }
+	| ")" { RPAREN }
+	| "[" { LSQUARE }
+	| "]" { RSQUARE }
 	(* punctuation *)
-	| "&" { finish lexbuf TOKENS.and_ }
-	| ":" { finish lexbuf TOKENS.colon }
-	| "," { finish lexbuf TOKENS.comma }
-	| "/" { finish lexbuf TOKENS.divide }
-	| "." { finish lexbuf TOKENS.dot }
-	| "=" { finish lexbuf TOKENS.eq }
-	| ">" { finish lexbuf TOKENS.gt }
-	| "<" { finish lexbuf TOKENS.lt }
-	| "-" { finish lexbuf TOKENS.minus }
-	| "|" { finish lexbuf TOKENS.or_ }
-	| "+" { finish lexbuf TOKENS.plus }
-	| ";" { finish lexbuf TOKENS.semicolon }
-	| "*" { finish lexbuf TOKENS.times }
-	| ":=" { finish lexbuf TOKENS.assign }
-	| ">=" { finish lexbuf TOKENS.ge }
-	| "<=" { finish lexbuf TOKENS.le }
-	| "<>" { finish lexbuf TOKENS.neq }
+	| "&" { AND }
+	| ":" { COLON }
+	| "," { COMMA }
+	| "/" { DIVIDE }
+	| "." { DOT }
+	| "=" { EQ }
+	| ">" { GT }
+	| "<" { LT }
+	| "-" { MINUS }
+	| "|" { OR }
+	| "+" { PLUS }
+	| ";" { SEMICOLON }
+	| "*" { TIMES }
+	| ":=" { ASSIGN }
+	| ">=" { GE }
+	| "<=" { LE }
+	| "<>" { NEQ }
 	(* keywords *)
-	| "array" { finish lexbuf TOKENS.array }
-	| "break" { finish lexbuf TOKENS.break }
-	| "do" { finish lexbuf TOKENS.do_ }
-	| "else" { finish lexbuf TOKENS.else_ }
-	| "end" { finish lexbuf TOKENS.end_ }
-	| "for" { finish lexbuf TOKENS.for_ }
-	| "function" { finish lexbuf TOKENS.function_ }
-	| "if" { finish lexbuf TOKENS.if_ }
-	| "in" { finish lexbuf TOKENS.in_ }
-	| "let" { finish lexbuf TOKENS.let_ }
-	| "nil" { finish lexbuf TOKENS.nil }
-	| "of" { finish lexbuf TOKENS.of_ }
-	| "then" { finish lexbuf TOKENS.then_ }
-	| "to" { finish lexbuf TOKENS.to_ }
-	| "type" { finish lexbuf TOKENS.type_ }
-	| "var" { finish lexbuf TOKENS.var }
-	| "while" { finish lexbuf TOKENS.while_ }
+	| "array" { KW_ARRAY }
+	| "break" { KW_BREAK }
+	| "do" { KW_DO }
+	| "else" { KW_ELSE }
+	| "end" { KW_END }
+	| "for" { KW_FOR }
+	| "function" { KW_FUNCTION }
+	| "if" { KW_IF }
+	| "in" { KW_IN }
+	| "let" { KW_LET }
+	| "nil" { KW_NIL }
+	| "of" { KW_OF }
+	| "then" { KW_THEN }
+	| "to" { KW_TO }
+	| "type" { KW_TYPE }
+	| "var" { KW_VAR }
+	| "while" { KW_WHILE }
 	(* user-defined input *)
-	| id { Lexing.lexeme lexbuf |> TOKENS.id |> finish lexbuf }
-	| digit+ { Lexing.lexeme lexbuf |> int_of_string |> TOKENS.int |> finish lexbuf }
+	| id { ID (Lexing.lexeme lexbuf) }
+	| digit+ { INT (int_of_string (Lexing.lexeme lexbuf)) }
 	| '"' { read_string (Lexing.lexeme_start lexbuf) (Buffer.create 8) lexbuf }
-	| eof { TOKENS.eof }
+	| eof { EOF }
 	| _ as ch { "uh oh: " ^ (string_of_int (Char.code ch)) |> ErrorMsg.impossible }
 
 and read_comment level =
@@ -77,15 +74,12 @@ and read_comment level =
 	| _ { read_comment level lexbuf }
 	| eof {
 		ErrorMsg.error lexbuf.lex_curr_pos "unclosed comment";
-		TOKENS.eof
+		EOF
 	}
 
 and read_string start_p buf =
 	parse
-	| '"' {
-		let end_p = lexbuf.lex_curr_pos in
-		TOKENS.string (Buffer.contents buf) (start_p, end_p)
-	}
+	| '"' { STRING (Buffer.contents buf) }
 	| "\\n" | "\\^J" {
 		Buffer.add_char buf '\n';
 		read_string start_p buf lexbuf
@@ -116,7 +110,7 @@ and read_string start_p buf =
 	| eof {
 		let end_p = lexbuf.lex_curr_pos in
 		ErrorMsg.error end_p "unclosed string";
-		TOKENS.string (Buffer.contents buf) (start_p, end_p)
+		STRING (Buffer.contents buf)
 	}
 	| _ as c { "unhandled string char `" ^ String.make 1 c ^ "`" |> ErrorMsg.impossible }
 
