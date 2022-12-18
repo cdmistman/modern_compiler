@@ -34,7 +34,7 @@ let wrap_tls connection =
   traceln "host is %s" @@ Domain_name.to_string host;
   Tls_eio.client_of_flow cfg ~host connection
 
-let print_test conn testname =
+let print_test_file conn testname =
   traceln "downloading file for test %s" testname;
   let dl_res =
     Client.get ~conn host @@ "/~appel/modern/testcases/" ^ testname ^ ".tig"
@@ -59,7 +59,10 @@ let main ~env ~sw =
   let conn = wrap_tls tcp_conn in
   (* TODO: use Fiber.fork once cohttp_eio supports http multiplexing (not
      enabled in 6.0.0~alpha0) *)
-  List.iter (print_test conn) tests
+  List.iter (print_test_file conn) tests;
+  let test_item test_name = "\"" ^ test_name ^ "\"," ^ test_name in
+  let tests' = List.map test_item tests in
+  print_endline ("let sample_programs = [" ^ String.concat ";" tests' ^ "]")
 
 let () =
   Eio_main.run @@ fun env ->

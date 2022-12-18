@@ -1,12 +1,13 @@
 (menhir
- (modules parse))
+ (modules parse)
+ (flags --trace))
 
 (ocamllex lex)
 
 (library
  (name tiger)
  (public_name tiger)
- (modules ast errormsg lex parse)
+ (modules ast errormsg lex parse tiger)
  (libraries base stdio)
  (preprocess
   (pps ppx_expect ppx_inline_test))
