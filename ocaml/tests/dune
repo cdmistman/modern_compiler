@@ -1,3 +1,8 @@
+(env
+ (_
+  (env-vars
+   (OUNIT_CI true))))
+
 (test
  (name test_sample_programs)
  (libraries ounit2 tiger)
