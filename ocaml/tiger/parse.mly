@@ -47,17 +47,23 @@
 %token <int> INT
 %token <string> STRING
 
-%start <Ast.dec list> decs
+(*
+precedences listed from low to high
+
+I'm using some of the precedences from ocaml's `parser.mly`
+https://github.com/ocaml/ocaml/blob/be210179503c4a82b72dd4762560e13c408d37b7/parsing/parser.mly
+*)
+%nonassoc "in"
+%nonassoc ";"
+%nonassoc "let"
+%nonassoc "then" /* below KW_ELSE */
+%left "else"
+%right ":="
+
+%start <Ast.exp> prog
 %%
 
-let decs := list(dec)
-
-let dec :=
-	| f=fun_dec; <`FunDec>
-	| t=ty_dec; <`TyDec>
-	| v=var_dec; <`VarDec>
-
-let expseq := separated_nonempty_list(SEMICOLON, exp)
+let prog := e=exp; EOF; <>
 
 let exp :=
 	| array_type=ty_id; "["; n=exp; "]"; "of"; v=exp; <`ArrayExp>
@@ -77,6 +83,14 @@ let exp :=
 	| string=STRING; <`StringLitExp>
 	| "while"; cond=exp; "do"; consequence=exp; <`WhileExp>
 
+let decs := list(dec)
+
+let dec :=
+	| f=fun_dec; <`FunDec>
+	| t=ty_dec; <`TyDec>
+	| v=var_dec; <`VarDec>
+
+let expseq := separated_nonempty_list(SEMICOLON, exp)
 
 let fun_dec :=
 	"function"; name=ID;
