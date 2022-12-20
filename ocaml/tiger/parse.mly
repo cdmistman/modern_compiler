@@ -56,19 +56,51 @@ https://github.com/ocaml/ocaml/blob/be210179503c4a82b72dd4762560e13c408d37b7/par
 %nonassoc "in"
 %nonassoc ";"
 %nonassoc "let"
-%nonassoc "then" /* below KW_ELSE */
+%nonassoc "function" "type" "var"
+%nonassoc "then" "do" "of" /* below KW_ELSE */
 %left "else"
 %right ":="
+%left "|"
+%left "&"
+%nonassoc "=" "<>" "<" "<=" ">" ">="
+%left "+" "-"
+%left "*" "/"
+// unary negation operator is highest-precedence but you can't assign a token
+// multiple precedences - instead, this is handled in the `exp` rule by setting
+// the highest precedence using the `highest_prec` precedence
+// %right MINUS
+%nonassoc highest_prec
 
 %start <Ast.exp> prog
 %%
 
 let prog := e=exp; EOF; <>
 
+let arith_binop :=
+	| "/"; {`DividedBy}
+	| "-"; {`Minus}
+	| "+"; {`Plus}
+	| "*"; {`Times}
+
+let bool_binop :=
+	| "&"; {`And}
+	| "|"; {`Or}
+
+let cmp_binop :=
+	| "="; {`Eq}
+	| ">="; {`Ge}
+	| ">"; {`Gt}
+	| "<="; {`Le}
+	| "<"; {`Lt}
+	| "<>"; {`Neq}
+
 let exp :=
+	| lhs=exp; o=arith_binop; rhs=exp; <`ArithBinExp>
 	| array_type=ty_id; "["; n=exp; "]"; "of"; v=exp; <`ArrayExp>
 	| bind=lvalue; ":="; e=exp; <`AssignExp>
+	| lhs=exp; o=bool_binop; rhs=exp; <`BoolBinExp>
 	| "break"; {`BreakExp}
+	| lhs=exp; o=cmp_binop; rhs=exp; <`CmpBinExp>
 	| "for"; c=ID; ":="; _start=exp; "to"; _end=exp; "do"; body=exp; <`ForExp>
 	| fn=ID; "("; args=separated_list(",", exp); ")"; <`FunCallExp>
 	| "if"; cond=exp; "then"; consequence=exp; els=option("else"; e=exp; <>); <`IfExp>
