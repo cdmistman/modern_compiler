@@ -111,6 +111,7 @@ let exp :=
 	| record_type=ty_id; "{";
 		fields=separated_list(",", field=ID; "="; e=exp; <>);
 		"}"; <`RecordExp>
+	| "("; ")"; {`UnitExp}
 	| "("; es=expseq; ")"; <`SeqExp>
 	| string=STRING; <`StringLitExp>
 	| "while"; cond=exp; "do"; consequence=exp; <`WhileExp>
@@ -145,7 +146,7 @@ let ty :=
 
 let ty_fields := separated_list(",", i=ID; ":"; t=ty_id; <>)
 
-let ty_id := ID
+let ty_id == ID
 
 let var_dec :=
 	"var"; variable=ID;

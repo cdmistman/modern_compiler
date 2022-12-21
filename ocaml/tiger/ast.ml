@@ -19,6 +19,7 @@ and exp =
   | `RecordExp of ty_id * (id * exp) list
   | `SeqExp of exp list
   | `StringLitExp of string
+  | `UnitExp
   | `WhileExp of exp * exp ]
 
 and exp_arith_binop = [ `DividedBy | `Minus | `Plus | `Times ]
