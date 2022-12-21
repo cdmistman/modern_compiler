@@ -96,7 +96,8 @@ let cmp_binop :=
 
 let exp :=
 	| lhs=exp; o=arith_binop; rhs=exp; <`ArithBinExp>
-	| array_type=ty_id; "["; n=exp; "]"; "of"; v=exp; <`ArrayExp>
+	| v=lvalue; <`LValExp>
+	| array_type=ID; "["; n=exp; "]"; "of"; v=exp; <`ArrayExp>
 	| bind=lvalue; ":="; e=exp; <`AssignExp>
 	| lhs=exp; o=bool_binop; rhs=exp; <`BoolBinExp>
 	| "break"; {`BreakExp}
@@ -106,9 +107,8 @@ let exp :=
 	| "if"; cond=exp; "then"; consequence=exp; els=option("else"; e=exp; <>); <`IfExp>
 	| int=INT; <`IntLitExp>
 	| "let"; d=decs; "in"; e=expseq; "end"; <`LetExp>
-	| v=lvalue; <`LValExp>
 	| "nil"; {`NilExp}
-	| record_type=ty_id; "{";
+	| record_type=ID; "{";
 		fields=separated_list(",", field=ID; "="; e=exp; <>);
 		"}"; <`RecordExp>
 	| "("; ")"; {`UnitExp}
@@ -128,28 +128,27 @@ let expseq := separated_nonempty_list(SEMICOLON, exp)
 let fun_dec :=
 	"function"; name=ID;
 	"("; params=ty_fields; ")";
-	return_type=option(":"; t=ty_id; <>); 
+	return_type=option(":"; t=ID; <>); 
 	"="; body=exp;
 	<>
 
 let lvalue :=
+	| var=ID; "["; index=exp; "]"; { `ArrayAccessLVal (`VarLVal var, index) }
 	| array=lvalue; "["; index=exp; "]"; <`ArrayAccessLVal>
 	| record=lvalue; "."; field=ID; <`FieldLVal>
 	| i=ID; <`VarLVal>
 
-let ty_dec := "type"; name=ty_id; "="; typ=ty; <`Type>
+let ty_dec := "type"; name=ID; "="; typ=ty; <`Type>
 
 let ty :=
-	| "array"; "of"; item_type=ty_id; <`TypeArray>
-	| type_name=ty_id; <`TypeName>
+	| "array"; "of"; item_type=ID; <`TypeArray>
+	| type_name=ID; <`TypeName>
 	| "{"; fields=ty_fields; "}"; <`TypeRecord>
 
-let ty_fields := separated_list(",", i=ID; ":"; t=ty_id; <>)
-
-let ty_id == ID
+let ty_fields := separated_list(",", i=ID; ":"; t=ID; <>)
 
 let var_dec :=
 	"var"; variable=ID;
-	type_spec=option(":"; ts=ty_id; <>);
+	type_spec=option(":"; ts=ID; <>);
 	":="; expression=exp;
 	<>
