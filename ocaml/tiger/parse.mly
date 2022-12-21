@@ -67,9 +67,9 @@ https://github.com/ocaml/ocaml/blob/be210179503c4a82b72dd4762560e13c408d37b7/par
 %left "*" "/"
 // unary negation operator is highest-precedence but you can't assign a token
 // multiple precedences - instead, this is handled in the `exp` rule by setting
-// the highest precedence using the `highest_prec` precedence
+// the highest precedence using the `unary_neg` precedence
 // %right MINUS
-%nonassoc highest_prec
+%right unary_neg
 
 %start <Ast.exp> prog
 %%
@@ -107,6 +107,7 @@ let exp :=
 	| "if"; cond=exp; "then"; consequence=exp; els=option("else"; e=exp; <>); <`IfExp>
 	| int=INT; <`IntLitExp>
 	| "let"; d=decs; "in"; e=expseq; "end"; <`LetExp>
+	| "-"; e=exp; <`NegExp> %prec unary_neg
 	| "nil"; {`NilExp}
 	| record_type=ID; "{";
 		fields=separated_list(",", field=ID; "="; e=exp; <>);

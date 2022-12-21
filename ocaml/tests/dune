@@ -3,7 +3,7 @@
   (env-vars
    (OUNIT_CI true))))
 
-(test
+(executable
  (name test_sample_programs)
  (libraries base ounit2 tiger)
  (modules programs test_sample_programs))

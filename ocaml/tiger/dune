@@ -1,6 +1,6 @@
 (menhir
  (modules parse)
- (flags --trace)
+ ; (flags --trace)
  )
 
 (ocamllex lex)
