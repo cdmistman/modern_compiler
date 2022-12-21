@@ -1,12 +1,11 @@
-(env
- (_
-  (env-vars
-   (OUNIT_CI true))))
-
 (executable
  (name test_sample_programs)
  (libraries base ounit2 tiger)
  (modules programs test_sample_programs))
+
+(rule
+ (alias runtest)
+ (action (run %{exe:test_sample_programs.exe} -ci true)))
 
 (executable
  (name gen_sample_programs_file)
