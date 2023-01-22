@@ -1,7 +1,6 @@
 {
   "editor.formatOnSave": true,
   "ocaml.sandbox": {
-    "kind": "opam",
-    "switch": "5.0.0"
+    "kind": "global"
   }
 }

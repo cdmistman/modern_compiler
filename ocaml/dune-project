@@ -6,22 +6,25 @@
 
 (name tiger)
 
+(generate_opam_files true)
+
 (source
  (github cdmistman/modern_compiler))
 
-(package
- (name gen-sample-programs-file)
- (depends
-  cohttp-eio
-  domain-name
-  dune
-  eio_main
-  eio.unix
-  mirage-crypto-rng
-  mirage-crypto-rng-eio
-  ocaml
-  tls-eio
-  unix))
+; (package
+;  (name gen-sample-programs-file)
+;  (depends
+;   cohttp-eio
+;   domain-name
+;   dune
+;   eio_main
+;   eio
+;   mirage-crypto-rng
+;   mirage-crypto-rng-eio
+;   ocaml
+;   tls-eio
+;   ; unix
+;   ))
 
 (package
  (name chap01)

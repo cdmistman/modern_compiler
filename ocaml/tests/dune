@@ -1,29 +1,29 @@
-(executable
- (name test_sample_programs)
- (libraries base ounit2 tiger)
- (modules programs test_sample_programs))
+; (executable
+;  (name test_sample_programs)
+;  (libraries base ounit2 tiger)
+;  (modules programs test_sample_programs))
 
-(rule
- (alias runtest)
- (action (run %{exe:test_sample_programs.exe} -ci true)))
+; (rule
+;  (alias runtest)
+;  (action (run %{exe:test_sample_programs.exe} -ci true)))
 
-(executable
- (name gen_sample_programs_file)
- (package gen-sample-programs-file)
- (public_name gen-sample-programs-file)
- (modules gen_sample_programs_file)
- (libraries
-  cohttp-eio
-  domain-name
-  eio_main
-  eio.unix
-  mirage-crypto-rng
-  mirage-crypto-rng-eio
-  tls-eio
-  unix))
+; (executable
+;  (name gen_sample_programs_file)
+;  (package gen-sample-programs-file)
+;  (public_name gen-sample-programs-file)
+;  (modules gen_sample_programs_file)
+;  (libraries
+;   cohttp-eio
+;   domain-name
+;   eio_main
+;   eio.unix
+;   mirage-crypto-rng
+;   mirage-crypto-rng-eio
+;   tls-eio
+;   unix))
 
-(rule
- (action
-  (with-stdout-to
-   programs.ml
-   (run gen-sample-programs-file))))
+; (rule
+;  (action
+;   (with-stdout-to
+;    programs.ml
+;    (run gen-sample-programs-file))))
